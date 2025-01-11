@@ -1,11 +1,13 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const userRoutes = require("./routes/user");
-const dotenv = require("dotenv");
+import express from "express";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
+
+import userRoutes from "./routes/user.js";
+
 dotenv.config();
 
 const app = express();
-const port = 3000;
+const port = process.env.SERVER_PORT ?? 3000;
 
 // Middleware
 app.use(bodyParser.json());

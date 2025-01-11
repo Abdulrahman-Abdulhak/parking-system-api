@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require("sequelize");
+import { Sequelize, DataTypes } from "sequelize";
 
 const env = { process };
 const sequelize = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD, {
@@ -6,7 +6,7 @@ const sequelize = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD, {
   dialect: "mysql",
 });
 
-const User = sequelize.define("User", {
+export const User = sequelize.define("User", {
   fullName: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -35,8 +35,6 @@ const User = sequelize.define("User", {
   },
 });
 
-const createUsersTable = async () => {
+export const createUsersTable = async () => {
   await User.sync();
 };
-
-module.exports = { User, createUsersTable };
