@@ -1,9 +1,5 @@
-import { Sequelize, DataTypes } from "sequelize";
-
-const sequelize = new Sequelize('test', 'munier', 'moner1234', {
-  host: 'localhost',
-  dialect: 'mysql'
-});
+import { DataTypes } from "sequelize";
+import { sequelize } from "./ORM.js";
 
 export const User = sequelize.define("User", {
   fullName: {
@@ -34,6 +30,6 @@ export const User = sequelize.define("User", {
   },
 });
 
-export const createUsersTable = async () => {
-  await User.sync();
+export const createUsersTable = () => {
+  return User.sync();
 };

@@ -1,9 +1,5 @@
-import { Sequelize, DataTypes } from "sequelize" ;
-
-const sequelize = new Sequelize('test', 'munier', 'moner1234', {
-    host: 'localhost',
-    dialect: 'mysql'
-});
+import { DataTypes } from "sequelize";
+import { sequelize } from "./ORM.js";
 
 export const Reservation = sequelize.define("Reservation", {
   spotNumber: {
@@ -18,12 +14,12 @@ export const Reservation = sequelize.define("Reservation", {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Users', 
-      key: 'id',
+      model: "Users",
+      key: "id",
     },
   },
 });
 
-export const createReservationsTable = async () => {
-  await Reservation.sync();
+export const createReservationsTable = () => {
+  return Reservation.sync();
 };
