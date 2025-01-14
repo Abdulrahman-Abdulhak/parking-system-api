@@ -1,9 +1,8 @@
 import { Sequelize, DataTypes } from "sequelize";
 
-const env = { process };
-const sequelize = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD, {
-  host: env.DB_HOST,
-  dialect: "mysql",
+const sequelize = new Sequelize('test', 'munier', 'moner1234', {
+  host: 'localhost',
+  dialect: 'mysql'
 });
 
 export const User = sequelize.define("User", {
