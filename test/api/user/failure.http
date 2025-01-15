@@ -1,0 +1,34 @@
+###* File Variables
+@baseURL = {{protocol}}://{{hostName}}:{{port}}/api/{{version}}
+@usersURL = {{baseURL}}/users
+
+###* Requests Start
+
+# @name userRegisterMissingValues
+POST {{usersURL}}/register
+Content-Type: application/json
+
+{
+    "fullName": "test test"
+}
+
+###
+
+# @name userLoginWrongValues
+POST {{usersURL}}/login
+Content-Type: application/json
+
+{
+    "username": "no-user",
+    "password": "wrong"
+}
+
+###
+
+# @name userLoginMissingValues
+POST {{usersURL}}/login
+Content-Type: application/json
+
+{
+    "username": "no-user"
+}

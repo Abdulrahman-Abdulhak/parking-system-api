@@ -1,0 +1,69 @@
+###* File Variables
+@baseURL = {{protocol}}://{{hostName}}:{{port}}/api/{{version}}
+@usersURL = {{baseURL}}/users
+
+###* Requests Start
+
+# @name random
+GET {{baseURL}}/random
+Content-Type: application/json
+
+###
+
+@randomValue = {{random.response.body.value}}
+
+# @name visitorRegisterSuccess
+POST {{usersURL}}/register
+Content-Type: application/json
+
+{
+    "fullName": "test test",
+    "userType": "Visitor",
+    "phoneNumber": "+963{{randomValue}}",
+    "carPlate": "123456",
+    "password": "12345678",
+    "username": "test{{randomValue}}"
+}
+
+###
+
+@visitorUsername = {{visitorRegisterSuccess.request.body.username}}
+@visitorPassword = {{visitorRegisterSuccess.request.body.password}}
+
+# @name visitorLogin
+POST {{usersURL}}/login
+Content-Type: application/json
+
+{
+    "username": "{{visitorUsername}}",
+    "password": "{{visitorPassword}}"
+}
+
+###
+
+# @name employeeRegisterSuccess
+POST {{usersURL}}/register
+Content-Type: application/json
+
+{
+    "fullName": "test test",
+    "userType": "Employee",
+    "phoneNumber": "+963{{randomValue}}",
+    "carPlate": "123456",
+    "password": "12345678",
+    "username": "test{{randomValue}}"
+}
+
+###
+
+@employeeUsername = {{employeeRegisterSuccess.request.body.username}}
+@employeePassword = {{employeeRegisterSuccess.request.body.password}}
+
+# @name employeeLogin
+POST {{usersURL}}/login
+Content-Type: application/json
+
+{
+    "username": "{{employeeUsername}}",
+    "password": "{{employeePassword}}"
+}

@@ -1,0 +1,11 @@
+{
+  "rest-client.environmentVariables": {
+    "$shared": {},
+    "dev": {
+      "protocol": "http",
+      "hostName": "localhost",
+      "port": "3030",
+      "version": "v1"
+    }
+  }
+}
