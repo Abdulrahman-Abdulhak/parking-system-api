@@ -3,7 +3,7 @@
  * @param {(req, res, next) => void | Promise<void>} wrappedFunction Controller function.
  * @returns
  */
-export const asyncWrapper = (wrappedFunction) => {
+export const controllerWrapper = (wrappedFunction) => {
   return async (req, res, next) => {
     try {
       await wrappedFunction(req, res, next);

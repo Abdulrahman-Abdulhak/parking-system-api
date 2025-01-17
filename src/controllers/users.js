@@ -1,11 +1,11 @@
 import bcrypt from "bcryptjs";
 
-import { asyncWrapper } from "../middleware/index.js";
+import { controllerWrapper } from "../middleware/index.js";
 
 import { createUserModel } from "../models/index.js";
 import { CustomApiError } from "../errors/index.js";
 
-export const userRegister = asyncWrapper(async (req, res) => {
+export const userRegister = controllerWrapper(async (req, res) => {
   const { fullName, userType, phoneNumber, carPlate, password, username } =
     req.body;
 
@@ -29,7 +29,7 @@ export const userRegister = asyncWrapper(async (req, res) => {
   res.status(201).json({ message: "user registered successfully", user });
 });
 
-export const userLogin = asyncWrapper(async (req, res) => {
+export const userLogin = controllerWrapper(async (req, res) => {
   const { username, password } = req.body;
 
   const user = await createUserModel().findOne({ where: { username } });

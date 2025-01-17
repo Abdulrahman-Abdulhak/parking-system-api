@@ -1,5 +1,9 @@
 import dotenv from "dotenv";
-import { createReservationsTable, createUsersTable } from "./models/index.js";
+import {
+  createPaymentsTable,
+  createReservationsTable,
+  createUsersTable,
+} from "./models/index.js";
 
 /**
  * Call this function at the very start of your application to:
@@ -9,9 +13,24 @@ import { createReservationsTable, createUsersTable } from "./models/index.js";
 export default async function init() {
   dotenv.config();
 
+  //? Convert env string values to their JS corresponding values
+  const { env } = process;
+  for (const variable in env) {
+    if (Object.prototype.hasOwnProperty.call(env, variable)) {
+      const value = env[variable];
+
+      if (value === "true") env[variable] = true;
+      else if (value === "false") env[variable] = false;
+      else if (!Number.isNaN(Number.parseFloat(value))) {
+        env[variable] = Number.parseFloat(value);
+      }
+    }
+  }
+
   try {
     await createUsersTable();
     await createReservationsTable();
+    await createPaymentsTable();
   } catch (error) {
     return false;
   }

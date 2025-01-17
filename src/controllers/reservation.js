@@ -1,10 +1,10 @@
 import { CustomApiError, NotFoundError } from "../errors/index.js";
-import { asyncWrapper } from "../middleware/index.js";
+import { controllerWrapper } from "../middleware/index.js";
 
 import { createReservationModel, createUserModel } from "../models/index.js";
 import { encrypt, decrypt, setKey } from "../utils/index.js";
 
-export const setSessionKey = asyncWrapper((req, res) => {
+export const setSessionKey = controllerWrapper((req, res) => {
   const { sessionKey } = req.body;
   if (!sessionKey) {
     throw new CustomApiError("Session key is required");
@@ -14,7 +14,7 @@ export const setSessionKey = asyncWrapper((req, res) => {
   res.json({ message: "Session key set successfully" });
 });
 
-export const reserveSpot = asyncWrapper(async (req, res) => {
+export const reserveSpot = controllerWrapper(async (req, res) => {
   const { spotNumber, userId } = req.body;
 
   const user = await createUserModel().findByPk(userId);
@@ -40,7 +40,7 @@ export const reserveSpot = asyncWrapper(async (req, res) => {
   });
 });
 
-export const confirmReservation = asyncWrapper((req, res) => {
+export const confirmReservation = controllerWrapper((req, res) => {
   const { encryptedData, iv } = req.body;
 
   const decryptedData = decrypt({ iv, encryptedData });
