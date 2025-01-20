@@ -1,8 +1,13 @@
-import { DataTypes } from 'sequelize';
-import { ormDriver } from './ORM.js';
+import { DataTypes } from "sequelize";
+import { ormDriver } from "./ORM.js";
 
+// ! Converted from normal object creation pattern to Singelton Pattern
+/**
+ * @type {import("sequelize").ModelCtor<Model<any, any>>}
+ */
 let Payment = null;
 
+// TODO: add validation.
 export const createPaymentModel = () => {
   if (Payment == null) {
     const orm = ormDriver();

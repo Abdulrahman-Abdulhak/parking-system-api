@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import session from "express-session";
 
 import { ReservationRouter, UserRouter } from "./routes/index.js";
 import { errorHandler, notFound } from "./middleware/index.js";
@@ -12,6 +13,19 @@ const port = process.env.SERVER_PORT ?? 3000;
 
 //* Middleware
 app.use(bodyParser.json());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET_KEY,
+    saveUninitialized: false,
+    resave: false,
+    cookie: {
+      sameSite: true,
+      maxAge: 3_600_000, //? 1 Hour
+      path: "/api",
+      httpOnly: true,
+    },
+  })
+);
 
 //* Routes
 
@@ -25,6 +39,7 @@ app.use(`${baseServerPath}/reservations`, ReservationRouter);
 
 if (process.env.DEV) {
   app.get(`${baseServerPath}/random`, (req, res) => {
+    console.log(req.session);
     res.status(200).json({ value: parseInt(Math.random() * 1_000_000_000) });
   });
 }
@@ -34,7 +49,7 @@ app.use(errorHandler);
 
 const protocol = "http";
 const host = process.env.SERVER_HOST;
-const baseURL = `${protocol}://${host}:${port}`;
+const baseURL = `${protocol}://${host}:${port}${baseServerPath}`;
 app.listen(port, () => {
   console.log(`Server running at ${baseURL}`);
 });

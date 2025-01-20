@@ -1,9 +1,16 @@
 import bcrypt from "bcryptjs";
 
 import { controllerWrapper } from "../middleware/index.js";
-
 import { createUserModel } from "../models/index.js";
 import { CustomApiError } from "../errors/index.js";
+import { genSessionKey, setUserID } from "../utils/index.js";
+
+const onSuccess = (req, res, { status, message, user }) => {
+  const key = genSessionKey(req);
+  setUserID(req, user.id);
+
+  res.status(status).json({ message, user, key });
+};
 
 export const userRegister = controllerWrapper(async (req, res) => {
   const { fullName, userType, phoneNumber, carPlate, password, username } =
@@ -12,6 +19,7 @@ export const userRegister = controllerWrapper(async (req, res) => {
   const existingUser = await createUserModel().findOne({
     where: { username },
   });
+
   if (existingUser) {
     throw new CustomApiError(`the username ${username} already exists`, 400);
   }
@@ -26,7 +34,11 @@ export const userRegister = controllerWrapper(async (req, res) => {
     username,
   });
 
-  res.status(201).json({ message: "user registered successfully", user });
+  onSuccess(req, res, {
+    status: 201,
+    message: "user registered successfully",
+    user,
+  });
 });
 
 export const userLogin = controllerWrapper(async (req, res) => {
@@ -42,8 +54,13 @@ export const userLogin = controllerWrapper(async (req, res) => {
     throw new CustomApiError("invalid credentials", 400);
   }
 
-  res.status(200).json({
+  onSuccess(req, res, {
+    status: 200,
     message: "login successful",
-    user: { fullName: user.fullName, userType: user.userType },
+    user: {
+      id: user.id,
+      fullName: user.fullName,
+      userType: user.userType,
+    },
   });
 });

@@ -1,54 +1,35 @@
-import { CustomApiError, NotFoundError } from "../errors/index.js";
-import { controllerWrapper } from "../middleware/index.js";
+import { authControllerWrapper } from "../middleware/index.js";
+import { createReservationModel } from "../models/index.js";
+import {
+  decrypt,
+  Symmetric,
+  getSessionKey,
+  getUserID,
+} from "../utils/index.js";
 
-import { createReservationModel, createUserModel } from "../models/index.js";
-import { encrypt, decrypt, setKey } from "../utils/index.js";
+export const reserveSpot = authControllerWrapper(async (req, res) => {
+  const { spotNumber, time } = req.body;
 
-export const setSessionKey = controllerWrapper((req, res) => {
-  const { sessionKey } = req.body;
-  if (!sessionKey) {
-    throw new CustomApiError("Session key is required");
-  }
+  const decipheredSpotNumber = Symmetric.decipher(
+    getSessionKey(req),
+    spotNumber
+  );
+  const decipheredTime = Symmetric.decipher(getSessionKey(req), time);
 
-  setKey(sessionKey);
-  res.json({ message: "Session key set successfully" });
-});
-
-export const reserveSpot = controllerWrapper(async (req, res) => {
-  const { spotNumber, userId } = req.body;
-
-  const user = await createUserModel().findByPk(userId);
-  if (!user) {
-    throw new NotFoundError("User not found");
-  }
-
-  const reservationData = JSON.stringify({
-    spotNumber,
-    reservedAt: new Date().toISOString(),
-  });
-  const encryptedData = encrypt(reservationData);
+  const reservationData = {
+    spotNumber: decipheredSpotNumber,
+    reservedAt: decipheredTime,
+  };
+  // const encryptedData = encrypt(reservationData);
 
   await createReservationModel().create({
-    spotNumber,
-    reservedAt: new Date(),
-    userId,
+    spotNumber: decipheredSpotNumber,
+    reservedAt: decipheredTime,
+    userId: getUserID(req),
   });
 
   res.status(201).json({
     message: "Reservation confirmed",
     data: encryptedData,
-  });
-});
-
-export const confirmReservation = controllerWrapper((req, res) => {
-  const { encryptedData, iv } = req.body;
-
-  const decryptedData = decrypt({ iv, encryptedData });
-  const { spotNumber, reservedAt } = JSON.parse(decryptedData);
-
-  res.status(200).json({
-    message: "Data received and decrypted",
-    spotNumber,
-    reservedAt,
   });
 });

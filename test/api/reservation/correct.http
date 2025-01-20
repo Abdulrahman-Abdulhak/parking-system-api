@@ -1,0 +1,22 @@
+###* File Variables
+@baseURL = {{protocol}}://{{hostName}}:{{port}}/api/{{version}}
+@reservationsURL = {{baseURL}}/reservations
+@key = Xx8hXU6qiMTVpt9MZkTF20Vr89rdLcDB
+
+###* Requests Start
+
+# @name random
+GET {{baseURL}}/random
+Content-Type: application/json
+
+###
+
+@randomValue = {{random.response.body.value}}
+
+# @name visitorRegisterSuccess
+POST {{reservationsURL}}/setSessionKey
+Content-Type: application/json
+
+{
+    "sessionKey": "test test"
+}

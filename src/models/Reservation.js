@@ -6,6 +6,8 @@ import { ormDriver } from "./ORM.js";
  * @type {import("sequelize").ModelCtor<Model<any, any>>}
  */
 let Reservation = null;
+
+// TODO: add validation.
 export const createReservationModel = () => {
   if (Reservation == null) {
     const orm = ormDriver();

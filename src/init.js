@@ -21,7 +21,7 @@ export default async function init() {
 
       if (value === "true") env[variable] = true;
       else if (value === "false") env[variable] = false;
-      else if (!Number.isNaN(Number.parseFloat(value))) {
+      else if (!Number.isNaN(Number(value))) {
         env[variable] = Number.parseFloat(value);
       }
     }
