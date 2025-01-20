@@ -12,11 +12,3 @@ Content-Type: application/json
 ###
 
 @randomValue = {{random.response.body.value}}
-
-# @name visitorRegisterSuccess
-POST {{reservationsURL}}/setSessionKey
-Content-Type: application/json
-
-{
-    "sessionKey": "test test"
-}

@@ -1,5 +1,5 @@
 export const isLoggedIn = (req) => {
-  return req.session.userID == null;
+  return req.session.userID != null;
 };
 
 export const setUserID = (req, id) => {

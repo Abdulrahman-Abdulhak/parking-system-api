@@ -24,7 +24,7 @@ export const controllerWrapper = (wrappedFunction) => {
 export const authControllerWrapper = (wrappedFunction) => {
   return controllerWrapper(async (req, res) => {
     if (!isLoggedIn(req)) {
-      throw UnauthorizedError();
+      throw new UnauthorizedError();
     }
 
     await wrappedFunction(req, res);

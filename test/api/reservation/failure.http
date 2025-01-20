@@ -1,34 +1,14 @@
 ###* File Variables
 @baseURL = {{protocol}}://{{hostName}}:{{port}}/api/{{version}}
-@usersURL = {{baseURL}}/users
+@reservationsURL = {{baseURL}}/reservations
+@key = Xx8hXU6qiMTVpt9MZkTF20Vr89rdLcDB
 
 ###* Requests Start
 
-# @name userRegisterMissingValues
-POST {{usersURL}}/register
+# @name reserveNoSessionCookie
+POST {{reservationsURL}}/reserve
 Content-Type: application/json
 
 {
-    "fullName": "test test"
-}
-
-###
-
-# @name userLoginWrongValues
-POST {{usersURL}}/login
-Content-Type: application/json
-
-{
-    "username": "no-user",
-    "password": "wrong"
-}
-
-###
-
-# @name userLoginMissingValues
-POST {{usersURL}}/login
-Content-Type: application/json
-
-{
-    "username": "no-user"
+    
 }
