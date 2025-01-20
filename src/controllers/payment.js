@@ -1,32 +1,28 @@
-import { Payment } from '../models/payment.js';
-import { generateServerKeys, decryptSessionKey, decryptPaymentData } from '../utils/RSA.js';
-//import { createPaymentModel } from "../models/index.js";
-//import { authControllerWrapper } from "../middleware/index.js";
+import { authControllerWrapper } from "../middleware/index.js";
+import { createPaymentModel } from "../models/index.js";
+import { Asymmetric } from "../utils/index.js";
 
-export const initPaymentKeys = (req, res) => {
-    const publicKey = generateServerKeys();
-    res.json({ serverPublicKey: publicKey });
-};
+export const initPayment = authControllerWrapper((req, res) => {
+  Asymmetric.generateServerKeys(req);
+  res.json({ package: Asymmetric.getServerPublicKey() });
+});
 
-export const createPayment = async (req, res) => {
-    const { encryptedSessionKey, encryptedPaymentData } = req.body;
+export const createPayment = authControllerWrapper(async (req, res) => {
+  const { payment } = req.body;
 
-    const sessionKey = decryptSessionKey(encryptedSessionKey);
+  const decryptedPayment = Asymmetric.decryptData(
+    Asymmetric.getServerPrivateKey(req),
+    payment
+  );
 
-    const paymentData = decryptPaymentData(encryptedPaymentData, sessionKey);
+  const { userId, amount, transactionId } = JSON.parse(decryptedPayment);
 
-    const { userId, amount, transactionId } = JSON.parse(paymentData);
-
-    try {
-        const payment = await Payment.create({
-            userId,
-            amount,
-            status: 'confirmed',    // هون شوف شو بدك تحطها 
-            paymentDate: new Date(),
-            transactionId,
-        });
-        res.json({ message: "Payment successful", payment });
-    } catch (error) {
-        res.status(500).json({ message: "Error processing payment", error: error.message });
-    }
-};
+  const paymentDetails = await createPaymentModel().create({
+    userId,
+    amount,
+    status: "confirmed", // TODO: change when using real payment system
+    paymentDate: new Date(),
+    transactionId,
+  });
+  res.status(200).json({ message: "Payment successful", paymentDetails });
+});
