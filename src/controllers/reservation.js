@@ -1,6 +1,6 @@
 import { CustomApiError } from "../errors/index.js";
 import { authControllerWrapper } from "../middleware/index.js";
-import { createReservationModel } from "../models/index.js";
+import { createReservationModel, dataCleanser } from "../models/index.js";
 import {
   Symmetric,
   addActivity,
@@ -33,7 +33,7 @@ export const reserveSpot = authControllerWrapper(async (req, res) => {
     await addActivity(req, "reserve", signature);
   }
 
-  await createReservationModel().create({
+  await dataCleanser(createReservationModel(), {
     ...data,
     userId: getUserID(req),
   });

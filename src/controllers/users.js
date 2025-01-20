@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 
 import { controllerWrapper } from "../middleware/index.js";
-import { createUserModel } from "../models/index.js";
+import { createUserModel, dataCleanser } from "../models/index.js";
 import { CustomApiError } from "../errors/index.js";
 import { Asymmetric, genSessionKey, setUserID } from "../utils/index.js";
 
@@ -32,7 +32,8 @@ export const userRegister = controllerWrapper(async (req, res) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await createUserModel().create({
+
+  const user = await dataCleanser(createUserModel(), {
     fullName,
     userType,
     phoneNumber,

@@ -1,5 +1,5 @@
 import { authControllerWrapper } from "../middleware/index.js";
-import { createPaymentModel } from "../models/index.js";
+import { createPaymentModel, dataCleanser } from "../models/index.js";
 import { Asymmetric, getUserID } from "../utils/index.js";
 
 export const initPayment = authControllerWrapper((req, res) => {
@@ -26,7 +26,7 @@ export const createPayment = authControllerWrapper(async (req, res) => {
 
   const { amount, transactionId } = JSON.parse(decryptedPayment);
 
-  const paymentDetails = await createPaymentModel().create({
+  const paymentDetails = await dataCleanser(createPaymentModel(), {
     userId: getUserID(req),
     amount,
     status: "confirmed", // TODO: change when using real payment system
