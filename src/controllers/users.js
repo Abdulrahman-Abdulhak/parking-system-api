@@ -9,6 +9,8 @@ const onSuccess = (req, res, { status, message, user }) => {
   const sessionKey = genSessionKey(req);
   setUserID(req, user.id);
 
+  console.log(user);
+
   res.status(status).json({
     message,
     user,
@@ -45,7 +47,7 @@ export const userRegister = controllerWrapper(async (req, res) => {
   onSuccess(req, res, {
     status: 201,
     message: "user registered successfully",
-    user,
+    user: user.dataValues,
   });
 });
 

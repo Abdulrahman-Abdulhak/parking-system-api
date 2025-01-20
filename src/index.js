@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import session from "express-session";
+import cors from "cors";
 
 import { ReservationRouter, UserRouter } from "./routes/index.js";
 import { errorHandler, notFound } from "./middleware/index.js";
@@ -13,6 +14,7 @@ const port = process.env.SERVER_PORT ?? 3000;
 
 //* Middleware
 app.use(bodyParser.json());
+app.use(cors());
 app.use(
   session({
     secret: process.env.SESSION_SECRET_KEY,
