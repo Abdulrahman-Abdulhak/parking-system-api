@@ -1,10 +1,9 @@
-// import { Router } from "express";
-// import { initPaymentKeys, createPayment } from "../controllers/index.js";
+import { Router } from "express";
+import { initPaymentKeys, createPayment } from '../controllers/payment.js';
 
-// const router = Router();
+const router = Router();
 
-// router.post("/init", initPaymentKeys);
+router.post('/init', initPaymentKeys);
+router.post('/pay', createPayment);
 
-// router.post("/pay", createPayment);
-
-// export default router;
+export default router;

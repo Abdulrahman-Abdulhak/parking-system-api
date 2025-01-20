@@ -1,35 +1,32 @@
-// import { controllerWrapper } from "../middleware/wrapper.js";
-// import { createPaymentModel } from "../models/index.js";
-// import {
-//   decryptData,
-//   getServerPublicKey,
-//   setClientKeys,
-// } from "../utils/index.js";
+import { Payment } from '../models/payment.js';
+import { generateServerKeys, decryptSessionKey, decryptPaymentData } from '../utils/RSA.js';
+//import { createPaymentModel } from "../models/index.js";
+//import { authControllerWrapper } from "../middleware/index.js";
 
-// let clientPublicKey;
+export const initPaymentKeys = (req, res) => {
+    const publicKey = generateServerKeys();
+    res.json({ serverPublicKey: publicKey });
+};
 
-// export const initPaymentKeys = controllerWrapper((req, res) => {
-//   clientPublicKey = req.body.clientPublicKey;
-//   setClientKeys(clientPublicKey);
+export const createPayment = async (req, res) => {
+    const { encryptedSessionKey, encryptedPaymentData } = req.body;
 
-//   const serverPublicKey = getServerPublicKey();
-//   res.status(200).json({ serverPublicKey });
-// });
+    const sessionKey = decryptSessionKey(encryptedSessionKey);
 
-// export const createPayment = controllerWrapper(async (req, res) => {
-//   const { encryptedSessionKey, encryptedPaymentData } = req.body;
+    const paymentData = decryptPaymentData(encryptedPaymentData, sessionKey);
 
-//   const sessionKey = decryptData(encryptedSessionKey, serverPrivateKey);
-//   const paymentData = decryptData(encryptedPaymentData, sessionKey);
+    const { userId, amount, transactionId } = JSON.parse(paymentData);
 
-//   const { userId, amount } = JSON.parse(paymentData);
-
-//   await createPaymentModel().create({
-//     userId,
-//     amount,
-//     status: "confirmed",
-//     paymentDate: new Date(),
-//   });
-
-//   res.status(200).json({ message: "Payment successful" });
-// });
+    try {
+        const payment = await Payment.create({
+            userId,
+            amount,
+            status: 'confirmed',    // هون شوف شو بدك تحطها 
+            paymentDate: new Date(),
+            transactionId,
+        });
+        res.json({ message: "Payment successful", payment });
+    } catch (error) {
+        res.status(500).json({ message: "Error processing payment", error: error.message });
+    }
+};
