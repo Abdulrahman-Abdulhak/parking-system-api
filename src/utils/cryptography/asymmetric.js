@@ -1,12 +1,12 @@
 import RSA from "node-rsa";
 
 export const getServerPrivateKey = (req) => {
-  if (!req.session.keys.privateKey) generateServerKeys();
+  if (!req.session.keys?.privateKey) generateServerKeys(req);
   return req.session.keys.privateKey;
 };
 
 export const getServerPublicKey = (req) => {
-  if (!req.session.keys.publicKey) generateServerKeys();
+  if (!req.session.keys?.publicKey) generateServerKeys(req);
   return req.session.keys.publicKey;
 };
 

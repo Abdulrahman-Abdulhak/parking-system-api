@@ -3,13 +3,20 @@ import bcrypt from "bcryptjs";
 import { controllerWrapper } from "../middleware/index.js";
 import { createUserModel } from "../models/index.js";
 import { CustomApiError } from "../errors/index.js";
-import { genSessionKey, setUserID } from "../utils/index.js";
+import { Asymmetric, genSessionKey, setUserID } from "../utils/index.js";
 
 const onSuccess = (req, res, { status, message, user }) => {
-  const key = genSessionKey(req);
+  const sessionKey = genSessionKey(req);
   setUserID(req, user.id);
 
-  res.status(status).json({ message, user, key });
+  res.status(status).json({
+    message,
+    user,
+    package: {
+      session: sessionKey,
+      public: Asymmetric.getServerPublicKey(req),
+    },
+  });
 };
 
 export const userRegister = controllerWrapper(async (req, res) => {

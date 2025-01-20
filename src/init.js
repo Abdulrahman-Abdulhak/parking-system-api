@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import {
+  createActivityLogsTable,
   createPaymentsTable,
   createReservationsTable,
   createUsersTable,
@@ -27,13 +28,8 @@ export default async function init() {
     }
   }
 
-  try {
-    await createUsersTable();
-    await createReservationsTable();
-    await createPaymentsTable();
-  } catch (error) {
-    return false;
-  }
-
-  return true;
+  await createUsersTable();
+  await createReservationsTable();
+  await createPaymentsTable();
+  await createActivityLogsTable();
 }
